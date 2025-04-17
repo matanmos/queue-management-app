@@ -1,6 +1,7 @@
 package com.example.queuemanagement
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -20,9 +21,36 @@ class MainActivity : AppCompatActivity() {
         val saveAppointmentButton = findViewById<Button>(R.id.saveAppointmentButton)
         val customerNameEditText = findViewById<EditText>(R.id.customerName)
         val customerPhoneEditText = findViewById<EditText>(R.id.customerPhone)
+        val startTimeButton = findViewById<Button>(R.id.startTimeButton)
+        val endTimeButton = findViewById<Button>(R.id.endTimeButton)
 
-        var selectedDate: String = ""
+        var selectedStartTime: String?  = null
+        var selectedEndTime: String?  = null
+        var selectedDate: String? = null
 
+
+        // Start time picker
+        startTimeButton.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+
+            TimePickerDialog(this, { dialog: TimePicker?, selectedHour: Int, selectedMinute: Int ->
+                selectedStartTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+                startTimeButton.text = "שעת התחלה: $selectedStartTime"
+            }, hour, minute, true).show()
+        }
+
+        endTimeButton.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+
+            TimePickerDialog(this, { dialog: TimePicker?, selectedHour: Int, selectedMinute: Int ->
+                selectedEndTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+                endTimeButton.text = "שעת סיום: $selectedEndTime"
+            }, hour, minute, true).show()
+        }
         // Date picker logic
         datePickerButton.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -64,13 +92,19 @@ class MainActivity : AppCompatActivity() {
         // Save appointment
         saveAppointmentButton.setOnClickListener {
             val name = customerNameEditText.text.toString().trim()
+            val appointmentText = datePickerButton.text.toString().trim()
 
-            if (name.isEmpty() || selectedDate.isEmpty()) {
-                Toast.makeText(this, "יש להזין שם ולבחור תאריך!", Toast.LENGTH_SHORT).show()
+            if (selectedDate == null || selectedStartTime == null || selectedEndTime == null || name.isEmpty()) {
+                Toast.makeText(this, "אנא מלא את כל הפרטים!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val appointment = Appointment(name = name, appointmentDate = selectedDate)
+            val appointment = Appointment(
+                name = name,
+                appointmentDate = appointmentText,
+                startTime = selectedStartTime.toString(),
+                endTime = selectedEndTime.toString()
+            )
             CoroutineScope(Dispatchers.IO).launch {
                 AppointmentDatabase.getDatabase(applicationContext).appointmentDao().insert(appointment)
             }

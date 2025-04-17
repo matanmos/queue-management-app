@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Appointment::class], version = 1)
+@Database(entities = [Appointment::class], version = 3)
 abstract class AppointmentDatabase : RoomDatabase() {
     abstract fun appointmentDao(): AppointmentDao
 
@@ -19,6 +19,7 @@ abstract class AppointmentDatabase : RoomDatabase() {
                     AppointmentDatabase::class.java,
                     "appointment_database"
                 ).build()
+                // ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 instance
             }

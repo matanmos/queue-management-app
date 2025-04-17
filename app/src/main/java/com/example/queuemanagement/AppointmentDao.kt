@@ -10,6 +10,6 @@ interface AppointmentDao {
     @Delete
     suspend fun delete(appointment: Appointment)
 
-    @Query("SELECT * FROM appointment_table")
-    suspend fun getAll(): List<Appointment>
+    @Query("SELECT * FROM appointments WHERE appointmentDate = :date")
+    suspend fun getAppointmentsByDate(date: String): List<Appointment>
 }
