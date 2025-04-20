@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         var selectedStartTime: String? = null
         var selectedEndTime: String? = null
-        var selectedDate: String? = null
+//        var selectedDate: String? = null
 
         val timeSlots = AppointmentAdapter.generateTimeSlots()
 
@@ -44,33 +44,36 @@ class MainActivity : AppCompatActivity() {
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val month = calendar.get(Calendar.MONTH) + 1 // Months are 0-based
         val year = calendar.get(Calendar.YEAR)
-        selectedDate = "$day/$month/$year"
-        datePickerButton.text = "$selectedDate"
-        fetchAppointments(selectedDate!!)
+//        selectedDate = "$day/$month/$year"
+//        datePickerButton.text = "$selectedDate"
+//        fetchAppointments(selectedDate!!)
+//
+//        // Set up RecyclerView
+//        appointmentAdapter = AppointmentAdapter(timeSlots, emptyList(), selectedDate!!) {
+//            // Refresh data when appointment is added or deleted
+//            fetchAppointments(selectedDate!!)
+//        }
+        var selectedDate = getTodayDate()
 
-        // Set up RecyclerView
-        appointmentAdapter = AppointmentAdapter(timeSlots, emptyList(), selectedDate!!) {
-            // Refresh data when appointment is added or deleted
-            fetchAppointments(selectedDate!!)
+        appointmentAdapter = AppointmentAdapter(timeSlots, emptyList(), { selectedDate }) {
+            fetchAppointments(selectedDate)
         }
+        datePickerButton.text = selectedDate
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = appointmentAdapter
 
         // Date picker logic
         datePickerButton.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
 
             val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
-                selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-                datePickerButton.text = "$selectedDate"
+                selectedDate = formatDate(selectedDay, selectedMonth, selectedYear)
+                datePickerButton.text = selectedDate
 
-                // After selecting the date, refresh the appointments
-//                fetchAppointments(selectedDate ?: "")
                 fetchAppointments(selectedDate!!)
-            }, year, month, day)
+            },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH))
 
             datePickerDialog.show()
         }
@@ -109,7 +112,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 appointmentAdapter.updateAppointments(appointments)
             }
-            Toast.makeText(this, "date is $date and finished the subroutine", Toast.LENGTH_SHORT).show()
         }
     }
 }

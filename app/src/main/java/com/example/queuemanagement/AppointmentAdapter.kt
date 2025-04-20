@@ -21,7 +21,7 @@ import org.threeten.bp.format.DateTimeFormatter
 class AppointmentAdapter(
     private var timeSlots: List<Pair<String, String>>, // Pair<startTime, endTime>
     private var appointments: List<Appointment>,
-    private val selectedDate: String,
+    private val getSelectedDate: () -> String,
     private val onAppointmentChanged: () -> Unit
 ) : RecyclerView.Adapter<AppointmentAdapter.AppointmentViewHolder>() {
 
@@ -82,7 +82,7 @@ class AppointmentAdapter(
                         if (customerName.isNotEmpty()) {
                             val newAppointment = Appointment(
                                 name = customerName,
-                                appointmentDate = selectedDate,
+                                appointmentDate = getSelectedDate(),
                                 startTime = timeSlot.first,
                                 endTime = timeSlot.second // Adjust end time as needed
                             )
@@ -90,7 +90,7 @@ class AppointmentAdapter(
                                 AppointmentDatabase.getDatabase(holder.itemView.context)
                                     .appointmentDao().insert(newAppointment)
                                 withContext(Dispatchers.Main) {
-                                    Toast.makeText(holder.itemView.context, "Appointment saved", Toast.LENGTH_SHORT).show()
+//                                    Toast.makeText(holder.itemView.context, "Appointment saved", Toast.LENGTH_SHORT).show()
                                     onAppointmentChanged() // Refresh the data safely on UI thread
                                 }
                             }
@@ -129,44 +129,3 @@ class AppointmentAdapter(
         }
     }
 }
-
-
-//package com.example.queuemanagement
-//
-//import android.view.LayoutInflater
-//import android.view.View
-//import android.view.ViewGroup
-//import android.widget.TextView
-//import androidx.recyclerview.widget.RecyclerView
-//
-//class AppointmentAdapter(private var appointments: List<Appointment>) :
-//    RecyclerView.Adapter<AppointmentAdapter.AppointmentViewHolder>() {
-//
-//    class AppointmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        val nameText: TextView = itemView.findViewById(R.id.nameText)
-//        val dateText: TextView = itemView.findViewById(R.id.dateText)
-//        val timeText: TextView = itemView.findViewById(R.id.timeText)
-//    }
-//
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
-//        val view = LayoutInflater.from(parent.context)
-//            .inflate(R.layout.appointment_item, parent, false)
-//        return AppointmentViewHolder(view)
-//    }
-//
-//    override fun onBindViewHolder(holder: AppointmentViewHolder, position: Int) {
-//        val appointment = appointments[position]
-//        holder.nameText.text = "שם: ${appointment.name}"
-//        holder.dateText.text = "תאריך: ${appointment.appointmentDate}"
-//        holder.timeText.text = "שעה: ${appointment.startTime} - ${appointment.endTime}"
-//    }
-//
-//    override fun getItemCount(): Int {
-//        return appointments.size
-//    }
-//
-//    fun updateData(newAppointments: List<Appointment>) {
-//        appointments = newAppointments
-//        notifyDataSetChanged()
-//    }
-//}
