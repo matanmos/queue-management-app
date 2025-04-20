@@ -5,52 +5,57 @@ import android.app.TimePickerDialog
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.queuemanagement.database.Appointment
+import com.example.queuemanagement.database.AppointmentDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
+import com.jakewharton.threetenabp.AndroidThreeTen
+import kotlinx.coroutines.withContext
+
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var appointmentAdapter: AppointmentAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        AndroidThreeTen.init(this) // Initialize the library
 
         val datePickerButton = findViewById<Button>(R.id.datePickerButton)
+        val recyclerView = findViewById<RecyclerView>(R.id.appointmentRecyclerView)
         val saveCustomerButton = findViewById<Button>(R.id.saveCustomerButton)
-        val saveAppointmentButton = findViewById<Button>(R.id.saveAppointmentButton)
         val customerNameEditText = findViewById<EditText>(R.id.customerName)
         val customerPhoneEditText = findViewById<EditText>(R.id.customerPhone)
-        val startTimeButton = findViewById<Button>(R.id.startTimeButton)
-        val endTimeButton = findViewById<Button>(R.id.endTimeButton)
 
-        var selectedStartTime: String?  = null
-        var selectedEndTime: String?  = null
+        var selectedStartTime: String? = null
+        var selectedEndTime: String? = null
         var selectedDate: String? = null
 
+        val timeSlots = AppointmentAdapter.generateTimeSlots()
 
-        // Start time picker
-        startTimeButton.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val hour = calendar.get(Calendar.HOUR_OF_DAY)
-            val minute = calendar.get(Calendar.MINUTE)
 
-            TimePickerDialog(this, { dialog: TimePicker?, selectedHour: Int, selectedMinute: Int ->
-                selectedStartTime = String.format("%02d:%02d", selectedHour, selectedMinute)
-                startTimeButton.text = "שעת התחלה: $selectedStartTime"
-            }, hour, minute, true).show()
+        // Fetch appointments for today
+        val calendar = Calendar.getInstance()
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val month = calendar.get(Calendar.MONTH) + 1 // Months are 0-based
+        val year = calendar.get(Calendar.YEAR)
+        selectedDate = "$day/$month/$year"
+        datePickerButton.text = "$selectedDate"
+        fetchAppointments(selectedDate!!)
+
+        // Set up RecyclerView
+        appointmentAdapter = AppointmentAdapter(timeSlots, emptyList(), selectedDate!!) {
+            // Refresh data when appointment is added or deleted
+            fetchAppointments(selectedDate!!)
         }
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = appointmentAdapter
 
-        endTimeButton.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val hour = calendar.get(Calendar.HOUR_OF_DAY)
-            val minute = calendar.get(Calendar.MINUTE)
-
-            TimePickerDialog(this, { dialog: TimePicker?, selectedHour: Int, selectedMinute: Int ->
-                selectedEndTime = String.format("%02d:%02d", selectedHour, selectedMinute)
-                endTimeButton.text = "שעת סיום: $selectedEndTime"
-            }, hour, minute, true).show()
-        }
         // Date picker logic
         datePickerButton.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -61,7 +66,10 @@ class MainActivity : AppCompatActivity() {
             val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
                 selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
                 datePickerButton.text = "$selectedDate"
-                Toast.makeText(this, "נבחר תאריך: $selectedDate", Toast.LENGTH_SHORT).show()
+
+                // After selecting the date, refresh the appointments
+//                fetchAppointments(selectedDate ?: "")
+                fetchAppointments(selectedDate!!)
             }, year, month, day)
 
             datePickerDialog.show()
@@ -88,27 +96,20 @@ class MainActivity : AppCompatActivity() {
             }
             Toast.makeText(this, "לקוח חדש נשמר בהצלחה!!", Toast.LENGTH_SHORT).show()
         }
+    }
 
-        // Save appointment
-        saveAppointmentButton.setOnClickListener {
-            val name = customerNameEditText.text.toString().trim()
-            val appointmentText = datePickerButton.text.toString().trim()
-
-            if (selectedDate == null || selectedStartTime == null || selectedEndTime == null || name.isEmpty()) {
-                Toast.makeText(this, "אנא מלא את כל הפרטים!", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+    // Method to fetch appointments for the selected date
+    private fun fetchAppointments(date: String) {
+        if (date.isNotEmpty()) {
+            CoroutineScope(Dispatchers.Main).launch {
+                val appointments = withContext(Dispatchers.IO) {
+                    AppointmentDatabase.getDatabase(this@MainActivity)
+                        .appointmentDao()
+                        .getAppointmentsByDate(date)
+                }
+                appointmentAdapter.updateAppointments(appointments)
             }
-
-            val appointment = Appointment(
-                name = name,
-                appointmentDate = appointmentText,
-                startTime = selectedStartTime.toString(),
-                endTime = selectedEndTime.toString()
-            )
-            CoroutineScope(Dispatchers.IO).launch {
-                AppointmentDatabase.getDatabase(applicationContext).appointmentDao().insert(appointment)
-            }
-            Toast.makeText(this, "תור חדש נשמר בהצלחה!!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "date is $date and finished the subroutine", Toast.LENGTH_SHORT).show()
         }
     }
 }

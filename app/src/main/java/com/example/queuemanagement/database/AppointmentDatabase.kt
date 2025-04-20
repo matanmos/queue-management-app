@@ -1,9 +1,10 @@
-package com.example.queuemanagement
+package com.example.queuemanagement.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.queuemanagement.AppointmentDao
 
 @Database(entities = [Appointment::class], version = 3)
 abstract class AppointmentDatabase : RoomDatabase() {

@@ -38,25 +38,53 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/startTimeButton"
-        android:layout_width="wrap_content"
+    <!--    <Button-->
+<!--        android:id="@+id/startTimeButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="80dp"-->
+<!--        android:text="בחר שעת התחלה"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.926"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/endTimeButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="80dp"-->
+<!--        android:text="בחר שעת סיום"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.107"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!-- שם הלקוח -->
+
+    <!-- מספר פלאפון -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/appointmentRecyclerView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="בחר שעת התחלה"
+        android:layout_marginTop="276dp"
+        android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.926"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/endTimeButton"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/customerName"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="בחר שעת סיום"
+        android:layout_marginTop="104dp"
+        android:gravity="end"
+        android:hint="שם הלקוח"
+        android:inputType="textPersonName"
+        android:textDirection="rtl"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.107"
+        app:layout_constraintHorizontal_bias="0.924"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -64,52 +92,36 @@
         android:id="@+id/saveCustomerButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="316dp"
+        android:layout_marginTop="200dp"
         android:text="שמור"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.941"
+        app:layout_constraintHorizontal_bias="0.928"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- שם הלקוח -->
-    <EditText
-        android:id="@+id/customerName"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
-        android:gravity="end"
-        android:hint="שם הלקוח"
-        android:inputType="textPersonName"
-        android:textDirection="rtl"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.941"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- מספר פלאפון -->
     <EditText
         android:id="@+id/customerPhone"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="264dp"
+        android:layout_marginTop="148dp"
         android:hint="מספר פלאפון"
         android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.94"
+        app:layout_constraintHorizontal_bias="0.924"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- שמור תור -->
-    <Button
-        android:id="@+id/saveAppointmentButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
-        android:text="שמור"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <Button-->
+<!--        android:id="@+id/saveAppointmentButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="140dp"-->
+<!--        android:text="שמור"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.498"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
