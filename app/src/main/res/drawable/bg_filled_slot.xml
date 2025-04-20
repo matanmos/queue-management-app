@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#D4E157"/> <!-- Light Green color -->
-    <corners android:radius="8dp"/>
+<!--<shape xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--    <solid android:color="#D4E157"/> &lt;!&ndash; Light Green color &ndash;&gt;-->
+<!--    <corners android:radius="8dp"/>-->
+<!--</shape>-->
+
+<!--<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">-->
+<!--<solid android:color="#AAFFFFFF" /> &lt;!&ndash; 80% transparent white &ndash;&gt;-->
+<!--<corners android:radius="12dp" />-->
+<!--</shape>-->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#80FFCDD2" /> <!-- Light red with transparency -->
+    <corners android:radius="12dp" />
+    <stroke android:width="1dp" android:color="#FF0000" />
 </shape>

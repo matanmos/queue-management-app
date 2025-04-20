@@ -49,7 +49,7 @@ class AppointmentAdapter(
             holder.itemView.setOnClickListener {
                 // Show delete confirmation dialog
                 AlertDialog.Builder(holder.itemView.context)
-                    .setMessage("Are you sure you want to delete this appointment?")
+                    .setMessage("האם למחוק את התור?")
                     .setPositiveButton("Yes") { _, _ ->
                         CoroutineScope(Dispatchers.IO).launch {
                             AppointmentDatabase.getDatabase(holder.itemView.context)
