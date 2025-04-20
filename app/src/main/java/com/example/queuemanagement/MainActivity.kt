@@ -55,16 +55,16 @@ class MainActivity : AppCompatActivity() {
 //        }
         var selectedDate = getTodayDate()
 
-        appointmentAdapter = AppointmentAdapter(timeSlots, emptyList(), { selectedDate }) {
-            fetchAppointments(selectedDate)
+        appointmentAdapter = AppointmentAdapter(timeSlots, emptyList(), { selectedDate!! }) {
+            fetchAppointments(selectedDate!!)
         }
         datePickerButton.text = selectedDate
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = appointmentAdapter
+        fetchAppointments(selectedDate!!)
 
         // Date picker logic
         datePickerButton.setOnClickListener {
-
             val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
                 selectedDate = formatDate(selectedDay, selectedMonth, selectedYear)
                 datePickerButton.text = selectedDate

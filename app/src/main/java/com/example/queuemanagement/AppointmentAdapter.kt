@@ -27,7 +27,6 @@ class AppointmentAdapter(
 
     class AppointmentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val timeSlotText: TextView = view.findViewById(R.id.timeSlotText)
-        val nameField: TextView = view.findViewById(R.id.nameField)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
@@ -43,9 +42,7 @@ class AppointmentAdapter(
 
         if (appointment != null) {
             // Filled slot: Show appointment details and set filled background
-            holder.timeSlotText.text = "${appointment.name} - ${appointment.startTime} to ${appointment.endTime}"
-            holder.nameField.visibility = View.VISIBLE
-            holder.nameField.text = appointment.name
+            holder.timeSlotText.text = "${appointment.startTime} - ${appointment.endTime}: ${appointment.name}"
             holder.itemView.setBackgroundResource(R.drawable.bg_filled_slot)
 
             // Handle click for deleting appointment
@@ -67,15 +64,14 @@ class AppointmentAdapter(
             }
         } else {
             // Empty slot: Show available status and set empty background
-            holder.timeSlotText.text = "$timeSlot - Available"
-            holder.nameField.visibility = View.GONE
+            holder.timeSlotText.text = "${timeSlot.first} - ${timeSlot.second} - פנוי"
             holder.itemView.setBackgroundResource(R.drawable.bg_empty_slot)
 
             // Handle click for adding an appointment
             holder.itemView.setOnClickListener {
                 val builder = AlertDialog.Builder(holder.itemView.context)
                 val input = EditText(holder.itemView.context)
-                builder.setTitle("Enter Customer Name")
+                builder.setTitle("שם הלקוח")
                     .setView(input)
                     .setPositiveButton("Save") { _, _ ->
                         val customerName = input.text.toString().trim()
