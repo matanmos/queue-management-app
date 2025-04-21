@@ -35,7 +35,6 @@ class AppointmentFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.appointmentRecyclerView)
         datePickerButton = view.findViewById(R.id.datePickerButton)
-//        db = AppDatabase.getInstance(requireContext())
         db = AppointmentDatabase.getDatabase(requireContext())
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())

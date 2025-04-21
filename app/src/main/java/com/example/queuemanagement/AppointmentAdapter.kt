@@ -1,16 +1,17 @@
 package com.example.queuemanagement
 
 import android.app.AlertDialog
+import android.text.InputType
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.queuemanagement.database.Appointment
 import com.example.queuemanagement.database.AppointmentDatabase
+import com.example.queuemanagement.database.CustomerDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -70,43 +71,59 @@ class AppointmentAdapter(
 
             // Handle click for adding an appointment
             holder.itemView.setOnClickListener {
-                val builder = AlertDialog.Builder(holder.itemView.context)
-                val input = EditText(holder.itemView.context)
-                builder.setTitle("שם הלקוח")
-                    .setView(input)
-                    .setPositiveButton("Save") { _, _ ->
-                        val customerName = input.text.toString().trim()
-                        if (customerName.isNotEmpty()) {
-                            val newAppointment = Appointment(
-                                name = customerName,
-                                appointmentDate = getSelectedDate(),
-                                startTime = timeSlot.first,
-                                endTime = timeSlot.second // Adjust end time as needed
+                CoroutineScope(Dispatchers.IO).launch {
+                    val customerNames = CustomerDatabase.getDatabase(holder.itemView.context)
+                        .customerDao()
+                        .getAllCustomerNames() // Make sure this DAO function exists
+
+                    withContext(Dispatchers.Main) {
+                        val input = AutoCompleteTextView(holder.itemView.context).apply {
+                            inputType = InputType.TYPE_CLASS_TEXT
+                            layoutParams = ViewGroup.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT
                             )
-                            Log.d("AppointmentAdapter", "New Appointment is: $newAppointment") // Log when loading appointments
+                            textDirection = View.TEXT_DIRECTION_RTL
+                            gravity = Gravity.END
+                            threshold = 1 // Start suggesting after 1 letter
+                            setAdapter(
+                                ArrayAdapter(
+                                    holder.itemView.context,
+                                    android.R.layout.simple_dropdown_item_1line,
+                                    customerNames
+                                )
+                            )
+                        }
 
-                            Log.d("AppointmentAdapter", "Before Saving routine: Name: ${newAppointment.name}; Date: ${newAppointment.appointmentDate}") // Log when loading appointments
-                            CoroutineScope(Dispatchers.IO).launch {
-                                AppointmentDatabase.getDatabase(holder.itemView.context)
-                                    .appointmentDao().insert(newAppointment)
-//                                withContext(Dispatchers.Main) {
-//                                    Log.d("AppointmentAdapter", "Saving Appointment: Name: ${newAppointment.name}; Date: ${newAppointment.appointmentDate}") // Log when loading appointments
-//
-//                                    onAppointmentChanged() // Refresh the data safely on UI thread
-//                                }
-                                val all = AppointmentDatabase.getDatabase(holder.itemView.context)
-                                    .appointmentDao().getAppointmentsByDate(newAppointment.appointmentDate)
+                        AlertDialog.Builder(holder.itemView.context)
+                            .setTitle("שם הלקוח")
+                            .setView(input)
+                            .setPositiveButton("Save") { _, _ ->
+                                val customerName = input.text.toString().trim()
+                                if (customerName.isNotEmpty()) {
+                                    val newAppointment = Appointment(
+                                        name = customerName,
+                                        appointmentDate = getSelectedDate(),
+                                        startTime = timeSlot.first,
+                                        endTime = timeSlot.second
+                                    )
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        AppointmentDatabase.getDatabase(holder.itemView.context)
+                                            .appointmentDao().insert(newAppointment)
 
-                                Log.d("AppointmentAdapter", "Appointments after insert: $all")
+                                        val all = AppointmentDatabase.getDatabase(holder.itemView.context)
+                                            .appointmentDao().getAppointmentsByDate(newAppointment.appointmentDate)
 
-                                withContext(Dispatchers.Main) {
-                                    onAppointmentChanged() // Update UI only after confirmed insert
+                                        withContext(Dispatchers.Main) {
+                                            onAppointmentChanged()
+                                        }
+                                    }
                                 }
                             }
-                        }
+                            .setNegativeButton("Cancel", null)
+                            .show()
                     }
-                    .setNegativeButton("Cancel", null)
-                    .show()
+                }
             }
         }
     }

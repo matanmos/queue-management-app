@@ -19,4 +19,7 @@ interface CustomerDao {
     suspend fun getAll(): List<Customer>
     @Query("SELECT EXISTS(SELECT 1 FROM customers WHERE name = :name)")
     suspend fun isCustomerNameExists(name: String): Boolean
+
+    @Query("SELECT name FROM customers ORDER BY name COLLATE LOCALIZED")
+    suspend fun getAllCustomerNames(): List<String>
 }
