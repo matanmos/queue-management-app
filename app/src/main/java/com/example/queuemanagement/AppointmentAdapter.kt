@@ -1,6 +1,7 @@
 package com.example.queuemanagement
 
 import android.app.AlertDialog
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -82,12 +83,24 @@ class AppointmentAdapter(
                                 startTime = timeSlot.first,
                                 endTime = timeSlot.second // Adjust end time as needed
                             )
+                            Log.d("AppointmentAdapter", "New Appointment is: $newAppointment") // Log when loading appointments
+
+                            Log.d("AppointmentAdapter", "Before Saving routine: Name: ${newAppointment.name}; Date: ${newAppointment.appointmentDate}") // Log when loading appointments
                             CoroutineScope(Dispatchers.IO).launch {
                                 AppointmentDatabase.getDatabase(holder.itemView.context)
                                     .appointmentDao().insert(newAppointment)
+//                                withContext(Dispatchers.Main) {
+//                                    Log.d("AppointmentAdapter", "Saving Appointment: Name: ${newAppointment.name}; Date: ${newAppointment.appointmentDate}") // Log when loading appointments
+//
+//                                    onAppointmentChanged() // Refresh the data safely on UI thread
+//                                }
+                                val all = AppointmentDatabase.getDatabase(holder.itemView.context)
+                                    .appointmentDao().getAppointmentsByDate(newAppointment.appointmentDate)
+
+                                Log.d("AppointmentAdapter", "Appointments after insert: $all")
+
                                 withContext(Dispatchers.Main) {
-//                                    Toast.makeText(holder.itemView.context, "Appointment saved", Toast.LENGTH_SHORT).show()
-                                    onAppointmentChanged() // Refresh the data safely on UI thread
+                                    onAppointmentChanged() // Update UI only after confirmed insert
                                 }
                             }
                         }

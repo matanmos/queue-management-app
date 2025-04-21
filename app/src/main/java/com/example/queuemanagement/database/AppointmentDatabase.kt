@@ -5,8 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.queuemanagement.AppointmentDao
+import android.util.Log
 
-@Database(entities = [Appointment::class], version = 3)
+@Database(entities = [Appointment::class], version = 4)
 abstract class AppointmentDatabase : RoomDatabase() {
     abstract fun appointmentDao(): AppointmentDao
 
@@ -19,8 +20,9 @@ abstract class AppointmentDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppointmentDatabase::class.java,
                     "appointment_database"
-                ).build()
-                // ).fallbackToDestructiveMigration().build()
+//                ).build()
+                ).fallbackToDestructiveMigration().build()
+                Log.d("DB_PATH", context.getDatabasePath("appointment_database").absolutePath) // 👈 Add this
                 INSTANCE = instance
                 instance
             }

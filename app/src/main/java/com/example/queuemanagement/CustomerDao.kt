@@ -1,6 +1,7 @@
 package com.example.queuemanagement
 
 import androidx.room.*
+import com.example.queuemanagement.database.Customer
 
 @Dao
 interface CustomerDao {
@@ -16,4 +17,6 @@ interface CustomerDao {
 
     @Query("SELECT * FROM customers")
     suspend fun getAll(): List<Customer>
+    @Query("SELECT EXISTS(SELECT 1 FROM customers WHERE name = :name)")
+    suspend fun isCustomerNameExists(name: String): Boolean
 }

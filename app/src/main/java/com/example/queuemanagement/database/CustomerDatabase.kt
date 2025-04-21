@@ -1,11 +1,12 @@
-package com.example.queuemanagement
+package com.example.queuemanagement.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.queuemanagement.CustomerDao
 
-@Database(entities = [Customer::class], version = 3)
+@Database(entities = [Customer::class], version = 4)
 abstract class CustomerDatabase : RoomDatabase() {
     abstract fun customerDao(): CustomerDao
 
@@ -18,8 +19,8 @@ abstract class CustomerDatabase : RoomDatabase() {
                     context.applicationContext,
                     CustomerDatabase::class.java,
                     "customer_database"
-                ).build()
-                // ).fallbackToDestructiveMigration().build()
+//                ).build()
+                 ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 instance
             }

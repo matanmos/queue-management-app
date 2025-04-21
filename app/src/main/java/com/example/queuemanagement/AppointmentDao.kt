@@ -16,4 +16,7 @@ interface AppointmentDao {
 
     @Query("SELECT * FROM appointments WHERE appointmentDate = :date")
     suspend fun getAppointmentsByDate(date: String): List<Appointment>
+
+    @Query("SELECT * FROM appointments")
+    suspend fun getAllAppointments(): List<Appointment>
 }

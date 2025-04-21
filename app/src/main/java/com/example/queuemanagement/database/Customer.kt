@@ -1,4 +1,4 @@
-package com.example.queuemanagement
+package com.example.queuemanagement.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
