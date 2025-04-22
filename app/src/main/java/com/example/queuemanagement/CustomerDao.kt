@@ -22,4 +22,7 @@ interface CustomerDao {
 
     @Query("SELECT name FROM customers ORDER BY name COLLATE LOCALIZED")
     suspend fun getAllCustomerNames(): List<String>
+
+    @Query("SELECT * FROM customers WHERE name = :name LIMIT 1")
+    suspend fun getCustomerByName(name: String): Customer?
 }

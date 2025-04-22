@@ -17,3 +17,13 @@ fun formatDate(day: Int, month: Int, year: Int): String {
     Log.d("Utils", "formatDate: $tmp")
     return tmp
 }
+
+fun normalizePhoneNumber(number: String): String {
+    return if (number.startsWith("0")) {
+        "+972" + number.drop(1)
+    } else if (!number.startsWith("+")) {
+        "+972$number" // Fallback if user entered without zero
+    } else {
+        number // Already in correct format
+    }
+}

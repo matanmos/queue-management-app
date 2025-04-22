@@ -19,4 +19,20 @@ interface AppointmentDao {
 
     @Query("SELECT * FROM appointments")
     suspend fun getAllAppointments(): List<Appointment>
+
+    @Query("""
+    SELECT appointmentDate
+    FROM appointments
+    GROUP BY appointmentDate
+    HAVING COUNT(*) >= (
+        SELECT MAX(daily_count)
+        FROM (
+            SELECT COUNT(*) AS daily_count
+            FROM appointments
+            GROUP BY appointmentDate
+        )
+    )
+""")
+    suspend fun getFullyBookedDates(): List<String>
+
 }
